@@ -1,0 +1,16 @@
+services:
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+
+  product-service:
+    build: ./services/product-service
+    ports:
+      - "5000:5000"
+
+  cart-service:
+    build: ./services/cart-service
+    ports:
+      - "5001:5001"
