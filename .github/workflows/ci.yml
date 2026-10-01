@@ -1,0 +1,26 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Test Product Service
+        run: |
+          cd Services/product-service
+          pip install -r requirements.txt
+          python -m py_compile app.py
+
+      - name: Test Cart Service
+        run: |
+          cd Services/cart-service
+          pip install -r requirements.txt
+          python -m py_compile app.py
