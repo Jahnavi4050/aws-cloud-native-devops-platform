@@ -11,47 +11,46 @@ permissions:
 
 env:
   AWS_REGION: us-east-1
-  AWS_ACCOUNT_ID: "136492549763"
+  AWS_ACCOUNT_ID: "753397112861"
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Test Product Service
-        run: |
-          cd Services/product-service
-          pip install -r requirements.txt
-          python -m py_compile app.py
-
-      - name: Test Cart Service
-        run: |
-          cd Services/cart-service
-          pip install -r requirements.txt
-          python -m py_compile app.py
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
-          role-to-assume: arn:aws:iam::136492549763:role/GitHubActions-ECR-Role
+          role-to-assume: arn:aws:iam::753397112861:role/GitHubActions-ECR-Role
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Test Product Service
+        run: |
+          cd services/product-service
+          pip install -r requirements.txt
+          python -m py_compile app.py
+
+      - name: Test Cart Service
+        run: |
+          cd services/cart-service
+          pip install -r requirements.txt
+          python -m py_compile app.py
+
       - name: Build and push Product Service
         run: |
-          docker build -t product-service ./Services/product-service
+          docker build -t product-service ./services/product-service
           docker tag product-service:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/product-service:latest
           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/product-service:latest
 
       - name: Build and push Cart Service
         run: |
-          docker build -t cart-service ./Services/cart-service
+          docker build -t cart-service ./services/cart-service
           docker tag cart-service:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cart-service:latest
           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cart-service:latest
 

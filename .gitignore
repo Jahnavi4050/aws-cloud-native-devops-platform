@@ -4,3 +4,8 @@ __pycache__/
 .venv/
 venv/
 .vscode/
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfstate.old-account
