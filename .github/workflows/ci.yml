@@ -32,25 +32,25 @@ jobs:
 
       - name: Test Product Service
         run: |
-          cd services/product-service
+          cd Services/product-service
           pip install -r requirements.txt
           python -m py_compile app.py
 
       - name: Test Cart Service
         run: |
-          cd services/cart-service
+          cd Services/cart-service
           pip install -r requirements.txt
           python -m py_compile app.py
 
       - name: Build and push Product Service
         run: |
-          docker build -t product-service ./services/product-service
+          docker build -t product-service ./Services/product-service
           docker tag product-service:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/product-service:latest
           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/product-service:latest
 
       - name: Build and push Cart Service
         run: |
-          docker build -t cart-service ./services/cart-service
+          docker build -t cart-service ./Services/cart-service
           docker tag cart-service:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cart-service:latest
           docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cart-service:latest
 
