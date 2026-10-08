@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cart-service
+  namespace: devops-store
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cart-service
+  template:
+    metadata:
+      labels:
+        app: cart-service
+    spec:
+      containers:
+        - name: cart-service
+          image: 753397112861.dkr.ecr.us-east-1.amazonaws.com/cart-service:latest
+          ports:
+            - containerPort: 5001

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cart-service
+  namespace: devops-store
+spec:
+  selector:
+    app: cart-service
+  ports:
+    - port: 5001
+      targetPort: 5001
+  type: ClusterIP
