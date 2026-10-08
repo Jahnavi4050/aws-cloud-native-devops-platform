@@ -1,9 +1,5 @@
 async function getProducts() {
-
-    const response = await fetch(
-        "http://localhost:5000/products"
-    );
-
+    const response = await fetch("/products");
     const products = await response.json();
 
     document.getElementById("output").innerHTML =
@@ -12,13 +8,8 @@ async function getProducts() {
         ).join("");
 }
 
-
 async function getCart() {
-
-    const response = await fetch(
-        "http://localhost:5001/cart"
-    );
-
+    const response = await fetch("/cart");
     const cart = await response.json();
 
     document.getElementById("output").innerHTML =
