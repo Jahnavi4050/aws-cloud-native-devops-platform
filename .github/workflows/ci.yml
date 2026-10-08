@@ -7,11 +7,12 @@ on:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
 
 env:
   AWS_REGION: us-east-1
   AWS_ACCOUNT_ID: "753397112861"
+  IMAGE_TAG: ${{ github.sha }}
 
 jobs:
   build-and-push:
@@ -42,20 +43,34 @@ jobs:
           pip install -r requirements.txt
           python -m py_compile app.py
 
-      - name: Build and push Product Service
+      - name:   Build and push Product Service
         run: |
-          docker build -t product-service ./Services/product-service
-          docker tag product-service:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/product-service:latest
-          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/product-service:latest
+            docker build -t product-service ./Services/product-service
+            docker tag product-service:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/product-service:$IMAGE_TAG
+            docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/product-service:$IMAGE_TAG
 
       - name: Build and push Cart Service
         run: |
-          docker build -t cart-service ./Services/cart-service
-          docker tag cart-service:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cart-service:latest
-          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cart-service:latest
+              docker build -t cart-service ./Services/cart-service
+              docker tag cart-service:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cart-service:latest
+              docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cart-service:latest
 
       - name: Build and push Frontend
         run: |
-          docker build -t frontend ./frontend
-          docker tag frontend:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/frontend:latest
-          docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/frontend:latest
+                docker build -t frontend ./frontend
+                docker tag frontend:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/frontend:$IMAGE_TAG
+                docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/frontend:$IMAGE_TAG
+
+      - name: Update Kubernetes manifests
+        run: |
+          sed -i "s|product-service:.*|product-service:$IMAGE_TAG|g" k8s/product-deployment.yaml
+          sed -i "s|cart-service:.*|cart-service:$IMAGE_TAG|g" k8s/cart-deployment.yaml
+          sed -i "s|frontend:.*|frontend:$IMAGE_TAG|g" k8s/frontend-deployment.yaml
+
+      - name: Commit and push Kubernetes manifest changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add k8s/
+          git commit -m "Update Kubernetes image tags" || echo "No changes to commit"
+          git push
