@@ -20,6 +20,7 @@ Developer → GitHub → GitHub Actions → Amazon ECR → Kubernetes manifests 
 | Orchestration | Kubernetes |
 | GitOps | Argo CD |
 | Networking | AWS Load Balancer Controller, ALB, Ingress |
+| Monitoring | Kubernetes Metrics Server |
 
 ## Application Services
 
@@ -70,8 +71,10 @@ The deployed application was verified through the ALB:
 
 - Configure a custom domain using Route 53
 - Enable HTTPS with AWS Certificate Manager
-- Add monitoring, alerting, and security scanning
+- Add Prometheus and Grafana dashboards for detailed observability
+- Configure alerting, centralized logging, and security scanning
 - Expand automated testing and cost controls
+
 
 ## Cost Considerations
 
