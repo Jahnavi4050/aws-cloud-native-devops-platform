@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'k8s/**'
 
 permissions:
   id-token: write
@@ -52,8 +54,8 @@ jobs:
       - name: Build and push Cart Service
         run: |
               docker build -t cart-service ./Services/cart-service
-              docker tag cart-service:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cart-service:latest
-              docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cart-service:latest
+              docker tag cart-service:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cart-service:$IMAGE_TAG
+              docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/cart-service:$IMAGE_TAG
 
       - name: Build and push Frontend
         run: |
